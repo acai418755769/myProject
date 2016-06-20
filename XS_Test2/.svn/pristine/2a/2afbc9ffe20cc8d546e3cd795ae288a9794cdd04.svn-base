@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.model">
+	<class name="Kcb" table="kcb">
+		<id name="id">
+			<generator class="identity"/>
+		</id>
+		<property name="kch" type="string"/>
+		<property name="kcm" type="string"/>
+			<property name="kxxq" type="int"/>
+			<property name="xs" type="int"/>
+			<property name="xf" type="int"/>
+		
+	</class>
+</hibernate-mapping>

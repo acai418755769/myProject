@@ -1,0 +1,79 @@
+package org.action;
+import java.util.Map;
+
+import org.model.Dlb;
+import org.model.Xsb;
+import org.service.DlService;
+import org.service.XsService;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+public class DlAction extends ActionSupport{
+	private DlService dlService;
+    private XsService xsService;	
+    private String xh;
+    private String kl;
+    
+
+public String getXh() {
+		return xh;
+	}
+	public void setXh(String xh) {
+		this.xh = xh;
+	}
+	public String getKl() {
+		return kl;
+	}
+	public void setKl(String kl) {
+		this.kl = kl;
+	}
+public XsService getXsService() {
+		return xsService;
+	}
+	public void setXsService(XsService xsService) {
+		this.xsService = xsService;
+	}
+private Dlb dl;
+	public Dlb getDl() {
+		return dl;
+	}
+	public void setDl(Dlb dl) {
+		this.dl = dl;
+	}
+	public DlService getDlService() {
+		return dlService;
+	}
+	public void setDlService(DlService dlService) {
+		this.dlService = dlService;
+	}
+	public String execute()throws Exception{
+	
+		Xsb xs=xsService.find(dl.getXh());
+	  String xh=xs.getXh();
+		
+		Dlb user=dlService.find(dl.getXh(), dl.getKl());
+		if(user!=null){
+			Map session=(Map)ActionContext.getContext().getSession();
+			session.put("user", user);
+			session.put("xs", xs);
+			session.put("xh", xh);
+			return SUCCESS;
+		}else
+			return ERROR;
+	}
+	public String register() throws Exception{
+		if(dlService.existXh(xh)){
+			return ERROR;
+		}
+		else {
+			Dlb d=new Dlb();
+			d.setKl(kl);
+			d.setXh(xh);
+			dlService.save(d);
+			
+		}
+		
+		
+		return SUCCESS;
+	}
+}

@@ -1,0 +1,243 @@
+
+<%@page import="javax.print.attribute.standard.Finishings"%><%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" import="java.util.*,Test.*,java.lang.reflect.*"%>
+<%@page import="java.io.PrintWriter"%>
+<%@page import="java.net.URLEncoder"%>
+<% 		
+	request.setCharacterEncoding("UTF-8");
+	response.setCharacterEncoding("UTF-8");	
+	 
+    String methodName = request.getParameter("method");
+    
+    try{
+	    Class[] argsClass = new Class[2]; 
+	    argsClass[0] = HttpServletRequest.class;
+	    argsClass[1] = HttpServletResponse.class;
+	    
+	    Class cls = this.getClass();   
+	    Method method = cls.getMethod(methodName, argsClass);   
+	    
+	    Object[] args = new Object[2];
+	    args[0] = request;
+	    args[1] = response;   
+	    
+	    BeforeInvoke(methodName);
+	    method.invoke(this, args);     
+    }catch( Exception e){
+        HashMap result = new HashMap();
+        result.put("error", -1);
+        result.put("message", e.getMessage());
+        result.put("stackTrace", e.getStackTrace());
+        String json = Test.JSON.Encode(result);
+        response.reset();
+        response.getWriter().write(json);
+    }        
+    finally
+    {
+        AfterInvoke(methodName);
+    }
+%>
+<%!
+//权限管理
+protected void BeforeInvoke(String methodName)
+{
+    //Hashtable user = GetUser();
+    //if (user.role == "admin" && methodName == "remove") throw .      
+}
+//日志管理
+protected void AfterInvoke(String methodName)
+{
+	
+}
+//学生的查询/////////////////////////
+public void SearchEmployees(HttpServletRequest request, HttpServletResponse response) throws Exception
+{ 		
+    //查询条件
+    String key = request.getParameter("key");
+    //分页
+    int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+    int pageSize = Integer.parseInt(request.getParameter("pageSize"));        
+    //字段排序
+    String sortField = request.getParameter("sortField");
+    String sortOrder = request.getParameter("sortOrder");
+    HashMap result = new Test.TestDB().SearchEmployees(key, pageIndex, pageSize, sortField, sortOrder);
+    String json = Test.JSON.Encode(result);
+ //  System.out.print("测试："+json);
+    response.getWriter().write(json);
+}
+
+public void SaveXs(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+
+	PrintWriter out=response.getWriter();
+	
+    String json = request.getParameter("data");
+    ArrayList rows = (ArrayList)Test.JSON.Decode(json);
+    for(int i=0,l=rows.size(); i<l; i++){
+  //  endDate = new String(endDate.getBytes("iso8859-1"),"UTF-8");
+    	HashMap row = (HashMap)rows.get(i);
+    //	String xm=row.get("xm").toString();
+    //	xm= new String(xm.getBytes("iso8859-1"),"UTF-8");
+   // System.out.println(row);
+        String xh1=row.get("xh").toString();
+		String id = row.get("id") != null ? row.get("id").toString() : "";
+        String state = row.get("_state") != null ? row.get("_state").toString() : "";
+        if(state.equals("added") || id.equals(""))	//新增：id为空，或_state为added
+        { 
+        TestDB test=new TestDB();
+        if(test.GetXsByXh(xh1)!=null){
+        System.out.println("学号已存在 ");
+        out.println("xh already exists");
+        out.close();
+        }else{
+        System.out.println("AAAAAAA");
+            new Test.TestDB().InsertXs(row);
+           }
+           
+        }
+        else if (state.equals("removed") || state.equals("deleted"))
+        {System.out.println("DDDDDDD");
+            new Test.TestDB().DeleteXs(id);
+        }
+        else if (state.equals("modified") || state.equals(""))	//更新：_state为空，或modified
+        {System.out.println("MMMMMMM");
+            new Test.TestDB().UpdateXs1(row);
+        }
+    }
+}
+public void RemoveXs(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+    String idStr = request.getParameter("id");       
+    if (StringUtil.isNullOrEmpty(idStr)) return;
+    String[] ids = idStr.split(",");
+    for (int i = 0, l = ids.length; i < l; i++)
+    {
+        String id = ids[i]; 
+        new Test.TestDB().DeleteXs(id);
+    }    
+}
+public void GetXs(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+    String id = request.getParameter("id");
+   // System.out.println(id);
+    HashMap user = new Test.TestDB().GetXs(id);
+    String json = Test.JSON.Encode(user);
+    response.getWriter().write(json);
+}
+/////////////////////////////
+//课程的查询 
+////////////////////////////
+public void GetKc(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+    String id = request.getParameter("id");
+   // System.out.println(id);
+    HashMap user = new Test.TestDB().GetKc(id);
+    String json = Test.JSON.Encode(user);
+    response.getWriter().write(json);
+}
+public void RemoveKc(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+    String idStr = request.getParameter("id");       
+    if (StringUtil.isNullOrEmpty(idStr)) return;
+    String[] ids = idStr.split(",");
+    for (int i = 0, l = ids.length; i < l; i++)
+    {
+        String id = ids[i]; 
+        new Test.TestDB().DeleteKc(id);
+    }    
+}
+public void SaveKc(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+    PrintWriter out=response.getWriter();
+    String json = request.getParameter("data");
+    ArrayList rows = (ArrayList)Test.JSON.Decode(json);
+    for(int i=0,l=rows.size(); i<l; i++){
+  //  endDate = new String(endDate.getBytes("iso8859-1"),"UTF-8");
+    	HashMap row = (HashMap)rows.get(i);
+    //	String xm=row.get("xm").toString();
+    //	xm= new String(xm.getBytes("iso8859-1"),"UTF-8");
+    String kch1=row.get("kch").toString();
+    String kcm1=row.get("kcm").toString();
+		String id = row.get("id") != null ? row.get("id").toString() : "";
+        String state = row.get("_state") != null ? row.get("_state").toString() : "";
+        if(state.equals("added") || id.equals(""))	//新增：id为空，或_state为added
+        {
+        TestDB test=new TestDB();
+        
+        if(test.GetKcByKch(kch1)!=null){
+        System.out.println("课程号已经存在");
+        out.print("kch already exists");
+        }else if(test.GetKcByKcm(kcm1)!=null){
+        System.out.println("课程名已经存在 ");
+        out.print("kcm already exists");
+        }
+        else{
+        System.out.println("AAAAAAA");
+            new Test.TestDB().InsertKc(row);
+            }
+        }
+        else if (state.equals("removed") || state.equals("deleted"))
+        {System.out.println("DDDDDDD");
+            new Test.TestDB().DeleteKc(id);
+        }
+        else if (state.equals("modified") || state.equals(""))	//更新：_state为空，或modified
+        {System.out.println("MMMMMMM");
+            new Test.TestDB().UpdateKc1(row);
+        }
+    }
+}
+
+//////////////////////////成绩表的操作
+
+
+public void GetCj(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+    String id = request.getParameter("id");
+   // System.out.println(id);
+    HashMap user = new Test.TestDB().GetCj(id);
+    String json = Test.JSON.Encode(user);
+    response.getWriter().write(json);
+}
+public void RemoveCj(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+    String idStr = request.getParameter("id");       
+    if (StringUtil.isNullOrEmpty(idStr)) return;
+    String[] ids = idStr.split(",");
+    for (int i = 0, l = ids.length; i < l; i++)
+    {
+        String id = ids[i]; 
+        new Test.TestDB().DeleteCj(id);
+    }    
+}
+//////
+public void RemoveLy(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+    String idStr = request.getParameter("id");       
+    if (StringUtil.isNullOrEmpty(idStr)) return;
+    String[] ids = idStr.split(",");
+    for (int i = 0, l = ids.length; i < l; i++)
+    {
+        String id = ids[i]; 
+        new Test.TestDB().DeleteLy(id);
+    }    
+}
+public void GetAllZy(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+	
+	
+    ArrayList data = new Test.TestDB().GetAllZy();
+    String json = Test.JSON.Encode(data);
+    response.getWriter().write(json);
+}
+public void GetZybXs(HttpServletRequest request, HttpServletResponse response) throws Exception
+{
+    String zyId = request.getParameter("zyId");
+    int pageIndex = Integer.parseInt(request.getParameter("pageIndex"));
+    int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+
+    HashMap result = new Test.TestDB().GetZybXs(zyId, pageIndex, pageSize);
+    String json = Test.JSON.Encode(result);
+    response.getWriter().write(json);
+}
+
+%> 

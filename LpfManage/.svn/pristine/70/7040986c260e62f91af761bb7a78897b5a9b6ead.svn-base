@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.model">
+	<class name="Task" table="task">
+		<id name="id">
+			<generator class="identity"/>
+		</id>
+		<property name="bname" type="string"/>
+		
+		<property name="h_name" type="string"/>
+		<property name="h_tel" type="string"/>
+		<property name="h_date" type="string"/>
+		<property name="h_descript" type="string"/>
+		<property name="h_photo" type="byte[]"/>
+		<property name="w_name" type="string"/>
+		<property name="w_tel" type="string"/>
+		<property name="w_date" type="string"/>
+		<property name="w_descript" type="string"/>
+		<property name="w_photo" type="byte[]"/>
+		<property name="state" type="int"/>
+		<property name="senddate" type="string"/>
+			
+	
+		 
+	</class>
+</hibernate-mapping>

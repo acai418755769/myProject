@@ -1,0 +1,112 @@
+<%@ page contentType="text/html;charset=utf8"%>
+<%@page import="org.model.Dlb" %>
+<%@page import="org.model.Xsb" %>
+<html>
+<head>
+    <title>留言面板</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+    <script src="/XS_Test2/scripts/boot.js" type="text/javascript"></script>
+    
+
+    <style type="text/css">
+   
+    </style>
+</head>
+<body>    
+     
+ 
+ <form id="form1"" method="post">
+        <fieldset style="border:solid 1px #aaa;padding:3px;">
+          <div style="text-align:center;padding:10px;">
+          <center>
+  			<table border="0">
+  			<caption>填写留言信息</caption>
+  			<tr>
+  			<td>留言标题:</td>
+  				<td><input type="text" name="title"/></td>
+  			</tr>
+  			<tr>
+  			<td>留言内容:</td>
+  			<td><textarea name="content" rows="5" cols="35"></textarea></td>
+			</tr>
+  			</table>
+  			 </center>  
+  			</div>
+  			</fieldset>   
+        <div style="text-align:center;padding:10px;">               
+            <a class="mini-button" onclick="onOk" style="width:60px;margin-right:20px;">确定</a>       
+            <a class="mini-button" onclick="onCancel" style="width:60px;">取消</a>       
+        </div>   
+          
+    </form>
+   
+    <script type="text/javascript">
+        mini.parse();
+
+        var form = new mini.Form("form1");
+       
+
+       function SaveData() {
+           var o = form.getData();            
+
+           form.validate();
+           if (form.isValid() == false) return;
+
+           var json = mini.encode([o]);
+          var json=eval(json);
+           <% 
+           Dlb user=new Dlb();
+                    user=(Dlb) request.getSession().getAttribute("user");
+                 String xh1=user.getXh();
+          %>
+          alert(json);
+           $.ajax({
+               url: "addLy1.action?xh="+'<%=xh1 %>',
+				type: 'post',
+               data: { data: json },
+               success: function (text) {
+                   CloseWindow("save");
+               },
+               error: function (jqXHR, textStatus, errorThrown) {
+                   alert(jqXHR.responseText);
+                   CloseWindow();
+               }
+           });
+       }
+        ////////////////////
+        //标准方法接口定义
+       
+
+        function GetData() {
+            var o = form.getData();
+            return o;
+        }
+        function CloseWindow(action) {            
+            if (action == "close" && form.isChanged()) {
+                if (confirm("数据被修改了，是否先保存？")) {
+                    return false;
+                }
+            }
+            if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+            else window.close();            
+        }
+        function onOk(e) {
+            SaveData();
+        }
+        function onCancel(e) {
+            CloseWindow("cancel");
+        }
+        //////////////////////////////////
+
+  var winAlert=window.alert;
+    	window.alert=function(e){
+    		if(e!=null&&e.indexOf("试用")>=1){
+    		}else{
+    			winAlert(e);
+    		}
+    	}
+
+    </script>
+</body>
+</html>

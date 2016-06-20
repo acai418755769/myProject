@@ -1,0 +1,78 @@
+package org.dao.imp;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.dao.XsDao;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.model.Xsb;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+public class XsDaoImp extends HibernateDaoSupport implements XsDao{
+	
+	
+	public void delete(String xh) {
+		getHibernateTemplate().delete(find(xh));
+	}
+	public List<Xsb> findByPage(final int offset, final int pageSize, String key) {
+		// TODO Auto-generated method stub
+		final String hql;
+		if(key==null||key.length()<1)
+			hql="from Xsb";
+		else
+			hql="from Xsb as a where a.xm like '%"+key+"%'";
+		List list=getHibernateTemplate().executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException,SQLException{
+				return session.createQuery(hql).setFirstResult((offset)*pageSize).setMaxResults(pageSize).list();
+			}
+		});
+		return list;
+	}
+	
+	public List<Xsb> findAllXs(String key) {
+		// TODO Auto-generated method stub
+		if(key==null||key.length()<1)
+			return getHibernateTemplate().find("from Xsb");
+		else
+			return getHibernateTemplate().find("from Xsb as a where a.xm like '%"+key+"%'");
+	}
+	
+	
+	public Xsb find(String xh) {
+		List<Xsb> list;
+		list=getHibernateTemplate().find("from Xsb where xh=?",xh);
+		if(list.size()>0)
+			return (Xsb)list.get(0);
+		else
+			return null;
+	}
+	
+	public List<String> findByzy(){
+		
+		List list=(List<String>)getHibernateTemplate().find(" zy_id from xsb");
+		return list;
+	}
+	public List<String> findByxs(){
+		
+		List list=(List<String>)getHibernateTemplate().find("xb from xsb");
+		return list;
+	}
+	
+	public List<Xsb> findAll() {
+		
+		return getHibernateTemplate().find("from Xsb");
+
+	}
+	public int findXsSize() {
+		return getHibernateTemplate().find("from Xsb").size();
+	}
+	public void save(Xsb xs) {
+		getHibernateTemplate().save(xs);
+	}
+	public void update(Xsb xs) {
+		getHibernateTemplate().update(xs);
+	}
+
+}

@@ -1,0 +1,44 @@
+package servlet;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+
+import extra.CountJson;
+
+public class TestServlet extends HttpServlet {
+
+	
+
+	public void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		  DB db=new DB();
+		   List<String> list=db.findByzy();
+		   List<CountJson> ac = new ArrayList<CountJson>();
+		   
+		   for(int i=0;i<list.size();i++)
+		   {
+				CountJson c=new CountJson();
+				int size = db.findByzy1(list.get(i)).size();
+				c.setName(list.get(i));
+				c.setSize(size);
+				ac.add(c);
+			}
+		//   JSONArray jsonArray = JSONArray.fromObject(ac);  
+		   //System.out.println("llalalalallalalala"+jsonArray);
+		 Gson json=new Gson();
+		 String json_str=json.toJson(ac);
+		   System.out.println("ac:"+json_str);
+		   response.getWriter().write(json_str);
+	}
+
+
+}

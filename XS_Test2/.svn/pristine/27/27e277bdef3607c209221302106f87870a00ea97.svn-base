@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.model">
+	<class name="Zyb" table="zyb">
+		<id name="id">
+			<generator class="identity"/>
+		</id>
+		   <property name="zym" type="string"/>
+			<property name="rs" type="int"/>
+			<property name="fdy" type="string"/>
+		
+		
+	</class>
+</hibernate-mapping>

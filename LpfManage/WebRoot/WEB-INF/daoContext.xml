@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
+	"http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+	<bean id="daoTemplate" abstract="true" lazy-init="true">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="eventDao" class="org.daoImpl.EventDaoImpl" 
+		parent="daoTemplate">
+	</bean>
+	<bean id="dlDao" class="org.daoImpl.DlDaoImpl"
+	parent="daoTemplate">
+	</bean>
+	<bean id="taskDao" class="org.daoImpl.TaskDaoImpl"
+	parent="daoTemplate">
+	</bean>
+	<bean id="workerDao" class="org.daoImpl.WorkerDaoImpl"
+	parent="daoTemplate">
+	</bean>
+	<bean id="bridgeDao" class="org.daoImpl.BridgeDaoImpl"
+	parent="daoTemplate">
+	</bean>
+</beans>

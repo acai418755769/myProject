@@ -1,0 +1,118 @@
+package org.action;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.model.Worker;
+import org.service.WorkerService;
+
+import Json.NewWorker;
+
+import com.google.gson.Gson;
+import com.opensymphony.xwork2.ActionSupport;
+
+public class WorkerAction extends ActionSupport{
+	private Worker worker;
+	
+	public Worker getWorker() {
+		return worker;
+	}
+	public void setWorker(Worker worker) {
+		this.worker = worker;
+	}
+	private int pageIndex;
+	private int pageSize;
+	private String key;
+	private String data;
+	private WorkerService workerService;
+	public int getPageIndex() {
+		return pageIndex;
+	}
+	public void setPageIndex(int pageIndex) {
+		this.pageIndex = pageIndex;
+	}
+	public int getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+	public String getData() {
+		return data;
+	}
+	public void setData(String data) {
+		this.data = data;
+	}
+	public WorkerService getWorkerService() {
+		return workerService;
+	}
+	public void setWorkerService(WorkerService workerService) {
+		this.workerService = workerService;
+	}
+ private InputStream inputStream;
+ public InputStream getResult(){
+	 return inputStream;
+ }
+ public String workerInfo(){
+	 return SUCCESS;
+ }
+public String addWorkerView(){
+		return SUCCESS;
+}
+ public String showWorker() throws Exception{
+ 		List<Worker> list_w=workerService.findAll(key);
+ 		int total=list_w.size();
+         List<Worker> list_worker_page=workerService.findByPage(getPageIndex(),getPageSize(),key);
+        List<NewWorker> newworker=new ArrayList<NewWorker>();
+        Iterator it=list_worker_page.iterator();
+        while(it.hasNext()){
+     	   Worker evn=(Worker)it.next();
+     	   NewWorker li=new NewWorker();
+     	   li.setId(evn.getId());
+     	 li.set_uid(evn.getId());
+     	  li.setName(evn.getName());
+     	  li.setAge(evn.getAge());
+     	  li.setSex(evn.getSex());
+     	  li.setTel(evn.getTel());
+     	  li.setWorktimes(evn.getWorktimes());
+     	  li.setFree(evn.getFree());
+     	   newworker.add(li);
+        }
+ 		HashMap result=new HashMap();
+ 		result.put("data", newworker);
+ 		result.put("total", total);
+ 		Gson json=new Gson();
+ 		String worker_json=json.toJson(result);
+ 		//news_json="("+news_json+")";
+ 	//	System.out.println(worker_json);
+ 		inputStream=new ByteArrayInputStream(worker_json.getBytes("UTF-8"));
+ 		return SUCCESS;
+ 	}
+ public  String deleteWorker() throws Exception{
+	 
+	 return SUCCESS;
+ }
+ public String addWorker()throws Exception{
+	Worker kc1=new Worker();
+	 kc1.setName(worker.getName());
+	// System.out.println("aaaa");
+	 kc1.setAge(worker.getAge());
+	 kc1.setTel(worker.getTel());
+	 kc1.setSex(worker.getSex());
+	 kc1.setFree(worker.getFree());
+	// Map request=(Map)ActionContext.getContext().get("request");
+	 workerService.addWorker(kc1);
+	 return SUCCESS;
+ }
+ 
+}

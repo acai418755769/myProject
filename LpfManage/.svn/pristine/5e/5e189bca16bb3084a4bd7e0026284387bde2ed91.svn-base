@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
+	"http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+
+	<!--  上报事件-->
+	<bean id="eventService" class="org.serviceImpl.EventServiceImpl">
+		<property name="eventDao" ref="eventDao"></property>
+		
+	</bean>
+	<bean id="eventAction" class="org.action.EventAction" >
+		<property name="eventService" ref="eventService"></property>
+		<property name="bridgeService" ref="bridgeService"></property>
+	</bean>
+	<!-- 登陆 -->
+	<bean id="dlService" class="org.serviceImpl.DlServiceImpl">
+	<property name="dlDao" ref="dlDao">
+	</property>
+	</bean>
+	<bean id="dlAction" class="org.action.DlAction">
+	<property name="dlService" ref="dlService"></property>
+	</bean>
+	<!-- 派工单  -->
+	<bean id="taskService" class="org.serviceImpl.TaskServiceImpl">
+	<property name="taskDao" ref="taskDao">
+	</property>
+	</bean>
+	<bean id="taskAction" class="org.action.TaskAction" >
+	<property name="taskService" ref="taskService"></property>
+	<property name="eventService" ref="eventService"></property>
+	<property name="workerService" ref="workerService"></property>
+	<property name="bridgeService" ref="bridgeService"></property>
+	</bean>
+	<!-- 工作人员  -->
+	<bean id="workerService" class="org.serviceImpl.WorkerServiceImpl">
+	<property name="workerDao" ref="workerDao">
+	</property>
+	</bean>
+	<bean id="workerAction" class="org.action.WorkerAction" >
+	<property name="workerService" ref="workerService">
+	</property>
+	</bean>
+	<!-- 桥梁 -->
+	<bean id="bridgeService" class="org.serviceImpl.BridgeServiceImpl">
+	<property name="bridgeDao" ref="bridgeDao">
+	</property>
+	</bean>
+	<bean id="bridgeAction" class="org.action.BridgeAction">
+	<property name="bridgeService" ref="bridgeService">
+	</property>
+	</bean>
+	
+	
+</beans>

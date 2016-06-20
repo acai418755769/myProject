@@ -1,0 +1,370 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ taglib uri="/struts-tags" prefix="s"%>
+<%@page import="org.model.Dlb" %>
+
+
+<html>
+<head>
+    <title>CellEdit 单元格编辑 </title>
+     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link href="/XS_Test2/css/demo.css" rel="stylesheet" type="text/css" />
+
+    <script src="/XS_Test2/scripts/boot.js" type="text/javascript"></script>
+    
+    <link href="/XS_Test2/scripts/miniui/themes/blue/skin.css" rel="stylesheet" type="text/css" />
+    
+</head>
+<body>
+
+
+
+    <h1>学生信息显示 </h1>
+
+    
+    
+    
+    <div style="width:1000px;">
+        <div class="mini-toolbar" style="border-bottom:0;padding:0px;">
+            <table style="width:100%;">
+                <tr>
+                   <%
+           Dlb user=new Dlb();
+                user=(Dlb) request.getSession().getAttribute("user");
+             int  flag=user.getFlag();
+            %>
+            <%if(flag==2){ %>
+                    <td style="width:100%;">
+                        <a class="mini-button" iconCls="icon-add" onclick="add()" plain="true" tooltip="增加...">增加</a>
+                        <a class="mini-button" iconCls="icon-edit" onclick="show1()" plain="true">详细信息</a>
+                         
+                        <span class="separator"></span>
+                       <a class="mini-button" iconCls="icon-remove" onclick="remove()" plain="true">删除 </a>
+                          <a class="mini-button"  iconCls="icon-download"  plain="true" href="test">导出Excel</a>           
+                    </td>
+                    <%} %>
+                    <td style="white-space:nowrap;">
+                        <input id="key" class="mini-textbox" emptyText="请输入姓名  " style="width:150px;" onenter="onKeyEnter"/>   
+                        <a class="mini-button" onclick="search()">查询</a>
+                    </td>
+                </tr>
+            </table>           
+        </div>
+    </div>
+    
+   <div id="datagrid1" class="mini-datagrid" style="width:1000px;height:300px;" allowResize="true"
+        url="showXsInfo"  idField="id" multiSelect="true">
+        <div property="columns">
+            <div type="indexcolumn"></div>
+            <div type="checkcolumn"></div>
+            
+          
+            <% if(flag==2){ %>
+             <div name="action" width="120" headerAlign="center" align="center" renderer="onActionRenderer" cellStyle="padding:0;" >操作</div>
+            <% } %>
+            <div field="xh" width="80" headerAlign="center"  >
+            	学号
+            </div>
+            <div field="xm" width="80" headerAlign="center">
+            	姓名
+            </div>
+            <div field="xb" width="40" headerAlign="center"	>
+            
+            	性别
+            </div>   
+            
+             <div field="cssj" width="80" headerAlign="center" allowSort="true" >  
+            	出生时间
+            </div> 
+             <div field="zym" width="80" headerAlign="center">
+            	专业名称 
+            </div> 
+            <div field="zxf" width="50" headerAlign="center">
+            	总学分
+            	
+            </div>   
+              <div field="bz" width="200" headerAlign="center">
+            	备注 
+            </div>  
+              
+        </div>
+    </div>
+    <div>
+  </div>
+ <div id="editForm1" style="display:none;padding:5px;position:relative;">
+    <input class="mini-hidden" name="id"/>
+    <table style="width:100%;">
+        <tr>
+            <td style="width:80px;">学号：</td>
+            <td style="width:150px;"><input name="xh" class="mini-textbox" /></td>
+            <td style="width:80px;">姓名：</td>
+            <td style="width:150px;"><input name="xm" class="mini-textbox" /></td>
+            <td style="width:80px;">总学分：</td>
+            <td style="width:150px;"><input name="zxf" class="mini-textbox" /></td>
+        </tr>
+        <tr>
+            <td>性别：</td>
+            <td style="width:80px;"><input name="xb" class="mini-textbox" /></td>
+           <td style="width:80px;">备注：</td>
+            <td style="width:150px;"><input name="bz" class="mini-textbox" /></td>
+            <td>出生日期：</td>
+            <td> <input name="cssj" class="mini-datepicker" required="true" emptyText="请选择日期"/></td>
+        </tr>
+        <tr>
+       <td style="width:80px;">专业名</td>
+            <td style="width:150px;"><input name="zy_id"  class="mini-combobox" data="ZyList" /></td>
+       
+       </tr> 
+    
+        <tr>
+            <td style="text-align:right;padding-top:5px;padding-right:20px;" colspan="6">
+                <a class="Update_Button" href="javascript:updateRow();">Update</a> 
+                <a class="Cancel_Button" href="javascript:cancelRow();">Cancel</a>
+            </td>                
+        </tr>
+    </table>
+</div>
+    
+    <script type="text/javascript">
+      
+      
+      var ZyList= [{ id: 1, text: '计算机' }, { id: 2, text: '通信'},{ id: 3,text: '经管'},{id: 4,text:'机械自动化'},{id:5,text:'人文'},{id:6,text:'英语'}];
+    var Genders = [{ id: 1, text: '男' }, { id: 0, text: '女'}];
+        
+        mini.parse();
+
+        var grid = mini.get("datagrid1");
+        grid.load();
+        
+           function onZyRenderer(e) {
+            for (var i = 0, l = ZyList.length; i < l; i++) {
+                var g =ZyList[i];
+                if (g.id == e.value) return g.text;
+            }
+            return "";
+        }
+        
+        /////////////////////
+    function add() {
+            
+            mini.open({
+                url: "addXsView.action",
+                title: "新学生 ", width: 500, height: 360,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = { action: "new"};
+                    iframe.contentWindow.SetData(data);
+                },
+                ondestroy: function (action) {
+
+                    grid.reload();
+                }
+            });
+        }
+
+     function remove() {
+            
+            var rows = grid.getSelecteds();
+            if (rows.length > 0) {
+                if (confirm("确定删除选中记录？")) {
+                    var json = mini.encode(rows);
+                    $.ajax({
+                        url: "deleteXsJson",
+                        type:'post',
+                        data:{data:json},
+                        success: function (text) {
+                        	alert(text);
+                            grid.reload();
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+            } else {
+                alert("请选中一条记录");
+            }
+        }
+ function show1(){
+            var rows = grid.getSelecteds();
+            if (rows.length > 0) {
+            var json=mini.encode(rows);
+            json=eval(json);
+            var xh=json[0].xh;
+              mini.open({
+                url: "findXs.action?xh="+xh,
+                title: "详细信息 ", width: 500, height: 360,
+              /*  onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = { action: "new"};
+                    iframe.contentWindow.SetData(data);
+                },
+                ondestroy: function (action) {
+                    grid.reload();
+                }*/
+            });
+            }else {
+                alert("请选中一条记录");
+            }
+          
+ }
+   function show() {
+            var rows = grid.getSelecteds();
+            if (rows.length > 0) {
+                    var json = mini.encode(rows);
+                	json=eval(json);
+                	var xh=json[0].xh;
+                    window.location.href="findXs.action?xh="+xh;
+                  /*  $.ajax({
+                        url: "show",
+                        type:'post',
+                        data:{data:json},
+                        success: function (text) {
+                            grid.reload();
+                        },
+                        error: function () {
+                        }
+                    });*/
+                
+            } else {
+                alert("请选中一条记录");
+            }
+        }
+        //////////////////////////////////////////////////////
+        
+        
+        var editForm = document.getElementById("editForm1");        
+        
+        var grid = mini.get("datagrid1");
+        grid.load();
+        grid.sortBy("createtime", "desc");
+        
+        ///////////////////////////////////////////////////////       
+           function onActionRenderer(e) {
+            var grid = e.sender;
+            var record = e.record;
+            var uid = record._uid;
+            var rowIndex = e.rowIndex;
+
+            var s = '<a class="New_Button" href="javascript:newRow()">New</a> '
+                    + '<a class="Edit_Button" href="javascript:editRow(\'' + uid + '\')">Edit</a> '
+                    + '<a class="Delete_Button" href="javascript:delRow(\'' + uid + '\')">Delete</a> ';
+                       
+            return s;
+        }
+        
+      function newRow() {  
+         
+            var row = {};
+            grid.addRow(row, 0);
+            editRow(row._uid);
+           
+        }
+        function editRow(row_uid) {
+           
+            var row = grid.getRowByUID(row_uid);
+            if (row) {
+                //显示行详细
+                grid.hideAllRowDetail();
+                grid.showRowDetail(row);
+                //将editForm元素，加入行详细单元格内
+                var td = grid.getRowDetailCellEl(row);
+                td.appendChild(editForm);
+                editForm.style.display = "";
+                //表单加载员工信息
+                var form = new mini.Form("editForm1");
+                if (grid.isNewRow(row)) {                    
+                    form.reset();
+                } else {
+                    form.loading();
+                    $.ajax({
+                        url: "/XS_Test2/data/AjaxService.jsp?method=GetXs&id=" + row.id,
+                        success: function (text) {
+                            var o = mini.decode(text);
+                            form.setData(o);                            
+                            form.unmask();
+                        }
+                    });
+                }
+                grid.doLayout();
+            }
+           
+        }
+        function cancelRow() {
+            grid.reload();
+        }
+        function delRow(row_uid) {
+           
+            var row = grid.getRowByUID(row_uid);
+            if (row) {
+                if (confirm("确定删除此记录？")) {
+                    grid.loading("删除中，请稍后......");
+                    $.ajax({
+                        url: "/XS_Test2/data/AjaxService.jsp?method=RemoveXs&id=" + row.id,
+                        success: function (text) {
+                            grid.reload();
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+            }
+           
+        }
+      function updateRow() {
+            var form = new mini.Form("editForm1");
+            var o = form.getData();
+            grid.loading("保存中，请稍后......");
+            var json = mini.encode([o]);
+            $.ajax({
+                url: "/XS_Test2/data/AjaxService.jsp?method=SaveXs",
+                data: { data: json },
+                success: function (text) {
+                	if(text.indexOf('exists')>=0){
+                		alert(text);
+                		grid.reload();
+                		}
+                	else
+                    	grid.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText);
+                }
+            });
+
+        }
+    
+        
+        ////////////////////////////////////////////////////////////
+        function search() {
+            var key = mini.get("key").getValue();
+            grid.load({ key: key });
+        }
+        function onKeyEnter(e) {
+            search();
+        }
+
+
+
+     
+
+        grid.on("celleditenter", function (e) {
+            var index = grid.indexOf(e.record);
+            if (index == grid.getData().length - 1) {
+                var row = {};
+                grid.addRow(row);
+            }
+        });
+        
+    </script>
+
+    <div class="description">
+        <h3>Description</h3>
+        <ul>
+            <li>方向键导航单元格</li>
+            <li>按回车键进入编辑</li>
+            <li>按ESC键取消编辑</li>
+            <li>按Tab键进入下一个单元格编辑</li>
+            <li>editNextOnEnterKey="true"后，按回车键进入下一个单元格编辑</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,279 @@
+ <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@page import="org.model.Dlb" %>
+<%@page import="org.model.Xsb" %>
+<%@page import="java.util.*" %>
+<%@page import="java.text.SimpleDateFormat" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>学生成绩管理系统</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="keywords" content="jquery,datagrid,grid,表格控件,ajax,web开发,java开发,.net开发,tree,table,treegrid" />
+    <meta name="description" content="jQuery MiniUI - 专业WebUI控件库。jQuery MiniUI是使用Javascript实现的前端Ajax组件库，支持所有浏览器，可以跨平台开发，如Java、.Net、PHP等。" />
+    
+    <script src="scripts/boot.js" type="text/javascript"></script>
+
+    <script src="js/core.js" type="text/javascript"></script>
+
+    <style type="text/css">
+    html, body{
+        margin:0;padding:0;border:0;width:100%;height:100%;overflow:hidden;
+    }
+
+    .logo
+    {
+        font-family:"微软雅黑",	"Helvetica Neue",​Helvetica,​Arial,​sans-serif;
+        font-size:28px;font-weight:bold;color:#444;        
+        cursor:default;
+        position:absolute;top:28px;left:15px;        
+        line-height:28px;
+    }    
+    .topNav
+    {
+        position:absolute;right:8px;top:10px;        
+        font-size:12px;
+        line-height:25px;
+    }
+    .topNav a
+    {
+        text-decoration:none;
+        color:#222;
+        font-weight:normal;
+        font-size:12px;
+        line-height:25px;
+        margin-left:3px;
+        margin-right:3px;
+    }
+    .topNav a:hover
+    {
+        text-decoration:underline;
+        color:Blue;
+    }   
+     .mini-layout-region-south img
+    {
+        vertical-align:top;
+    }
+    </style>
+</head>
+<body onload="startTime()">
+  <%
+                 Dlb user=new Dlb();
+                      user=(Dlb) request.getSession().getAttribute("user");
+                   String xh1=user.getXh();
+                   int flag=user.getFlag();
+                  
+                  %>
+<div class="mini-layout" style="width:100%;height:100%;">
+    <div title="north" region="north" class="app-header" bodyStyle="overflow:hidden;" height="80" showHeader="false" showSplit="false">
+        <div class="logo">学生成绩管理系统</div>
+       <%
+	Xsb xs=new Xsb();
+	xs=(Xsb) request.getSession().getAttribute("xs");
+	String name=xs.getXm();
+	 %>
+        <div class="topNav"> 
+         <h3 ><div id="txt"></div>
+             <div id="txt1"></div>
+         </h3>
+      
+        </div>
+        
+
+        <div style="position:absolute;right:12px;bottom:5px;font-size:12px;line-height:25px;font-weight:normal;">
+        
+            <span style="color:Red;font-family:Tahoma">（推荐Blue）</span>选择皮肤：
+            <select id="selectSkin" onchange="onSkinChange(this.value)" style="width:100px;" >
+                <option value="">Default</option>
+                <option value="blue">Blue</option>
+                <option value="gray">Gray</option>
+                <option value="olive2003">Olive2003</option>
+                <option value="blue2003">Blue2003</option>
+                <option value="blue2010">Blue2010</option>
+                <option value="bootstrap">Bootstrap</option>
+                <option value="metro">metro</option>
+                <option value="metro-green">metro-green</option>
+                <option value="metro-orange">metro-orange</option>
+                <option value="jqueryui-uilightness">jqueryui-uilightness</option>
+                <option value="jqueryui-humanity">jqueryui-humanity</option>
+                <option value="jqueryui-excitebike">jqueryui-excitebike</option>
+                <option value="jqueryui-cupertino">jqueryui-cupertino</option>
+            </select>
+        </div>
+    </div>
+    <div showHeader="false" region="south" style="border:0;text-align:center;" height="25" showSplit="false">
+  
+        <tr>
+        Copyright © 北京邮电大学lab466版权所有    
+        </tr>    
+        <tr>
+        本站被访问次数：${applicationScope.counter }
+        </tr>                                        
+        
+      
+        
+    </div>
+    <div region="west" title="管理系统" showHeader="true" bodyStyle="padding-left:1px;" showSplitIcon="true" width="230" minWidth="100" maxWidth="350">
+        <ul id="demoTree" class="mini-tree" showTreeIcon="true" style="width:100%;height:100%;"
+             enableHotTrack="true" onbeforeexpand="onBeforeExpand" >
+           
+            <li><a href="welcome.jsp" target="main">welcome</a></li>
+            <li>
+                <span expanded="true">个人信息 </span>
+                 <ul>
+                 
+               
+             
+                     <li><a href="findXs.action?xh=<%=xh1 %>" target="main">查看个人信息</a></li>               
+                  
+                 </ul>
+            
+            </li>
+            <li>
+			    <span expanded="true">学生成绩管理</span>
+			    <ul>    
+                    <li>
+			            <span expanded="true">学生信息管理</span>	
+			            <ul>
+			            <%if(flag==2){ %>
+                            <li><a href="addXsView.action" target="main">学生信息录入 </a></li>
+                            <%} %>
+                            <li><a href="xsInfo.action" target="main">学生信息查询 </a></li>
+                          
+                        </ul>             
+
+		            </li>
+                    <li>
+			            <span expanded="true">课程信息管理  </span>
+			            <ul>
+                            <li><a href="kcInfo.action" target="main">课程信息查询</a></li>
+                        </ul>
+                    </li>
+                     <li>
+			            <span expanded="true">成绩信息管理  </span>
+			            <ul>
+			            <%if(flag==2){ %>
+                            <li><a href="addXscjView.action" target="main">成绩信息录入 </a></li>
+                            <%} %>
+                            <li><a href="xscjInfo.action" target="main">学生成绩查询</a></li>
+                        </ul>
+                    </li>
+			    </ul>
+		    </li>  
+		    
+		    <li>
+		     <span expanded="true">学生留言</span>
+		         <ul>
+		            <li><a href="lyInfo.action" target="main">查看留言信息</a></li>
+		         
+		         </ul>
+		    
+		    </li>
+		    
+		    <li>
+		     <span expanded="true">查看专业人数</span>
+		         <ul>
+		            <li><a href="checkZy.action" target="main">查看专业人数</a></li>
+		            <li><a href="zyCount.jsp" target="main">查看专业分布图</a></li>
+		         
+		         </ul>
+		    
+		    </li>
+        </ul>
+            
+  
+            
+    </div>
+    <div title="center" region="center" style="border:0;">
+        <div id="mainTabs" class="mini-tabs" activeIndex="0" style="width:100%;height:100%;" 
+            onactivechanged="onTabsActiveChanged" 
+        >
+            <div title="Demo">
+                <iframe onload="onIFrameLoad()" src="/XS_Test2/welcome.jsp" id="mainframe" frameborder="0" name="main" style="width:100%;height:100%;" border="0"></iframe>
+            </div>
+            
+           
+        </div>        
+    </div>
+
+    
+</div>
+</body>
+
+
+</html>
+<script type="text/javascript">
+    mini.parse();
+    function onBeforeExpand(e) {
+        var tree = e.sender;
+        var nowNode = e.node;
+        var level = tree.getLevel(nowNode);
+
+        var root = tree.getRootNode();        
+        tree.cascadeChild(root, function (node) {
+            if (tree.isExpandedNode(node)) {
+                var level2 = tree.getLevel(node);
+                if (node != nowNode && !tree.isAncestor(node, nowNode) && level == level2) {
+                    tree.collapseNode(node, true);
+                }
+            }
+        });
+
+    }
+
+    function startTime()
+    {
+    var today=new Date()
+    var h=today.getHours()
+    var m=today.getMinutes()
+    var s=today.getSeconds()
+    var y=today.getFullYear()
+    var m1=today.getMonth()+1
+    var d=today.getDate()
+
+
+    // add a zero in front of numbers<10
+    m=checkTime(m)
+    s=checkTime(s)
+     <% if(flag==2){%>
+    document.getElementById('txt').innerHTML="您好<%= name %>管理员,欢迎进入学生成绩管理系统!当前时间："+y+"-"+m1+"-"+d+" "+h+":"+m+":"+s+" "
+     <%}else {%>
+     document.getElementById('txt').innerHTML="您好<%= name %>同学,欢迎进入学生成绩管理系统!当前时间："+y+"-"+m1+"-"+d+" "+h+":"+m+":"+s+" "
+   <% }%>
+     t=setTimeout('startTime()',1000)
+    }
+
+    function checkTime(i)
+    {
+    if (i<10) 
+      {i="0" + i}
+      return i
+    }
+
+    var d=new Date()
+    var weekday=new Array(7)
+    weekday[0]="星期日"
+    weekday[1]="星期一"
+    weekday[2]="星期二"
+    weekday[3]="星期三"
+    weekday[4]="星期四"
+    weekday[5]="星期五"
+    weekday[6]="星期六"
+
+    document.getElementById("txt1").innerHTML=weekday[d.getDay()];
+
+
+    var winAlert=window.alert;
+	window.alert=function(e){
+		if(e!=null&&e.indexOf("试用")>=1){
+		}else{
+			winAlert(e);
+		}
+	}
+</script>
+
+<script src="scripts/tongji.js" type="text/javascript"></script>

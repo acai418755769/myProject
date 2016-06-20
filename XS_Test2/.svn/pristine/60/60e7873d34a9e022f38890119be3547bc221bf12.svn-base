@@ -1,0 +1,98 @@
+package org.action;
+import java.util.Map;
+
+import org.model.Dlb;
+import org.model.Xsb;
+import org.service.DlService;
+import org.service.XsService;
+
+import com.opensymphony.xwork2.Action;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+public class DlAction extends ActionSupport implements Action{
+	private DlService dlService;
+    private XsService xsService;	
+    private String xh;
+    private String kl;
+    private int flag;
+    
+
+public int getFlag() {
+		return flag;
+	}
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
+public String getXh() {
+		return xh;
+	}
+	public void setXh(String xh) {
+		this.xh = xh;
+	}
+	public String getKl() {
+		return kl;
+	}
+	public void setKl(String kl) {
+		this.kl = kl;
+	}
+public XsService getXsService() {
+		return xsService;
+	}
+	public void setXsService(XsService xsService) {
+		this.xsService = xsService;
+	}
+private Dlb dl;
+	public Dlb getDl() {
+		return dl;
+	}
+	public void setDl(Dlb dl) {
+		this.dl = dl;
+	}
+	public DlService getDlService() {
+		return dlService;
+	}
+	public void setDlService(DlService dlService) {
+		this.dlService = dlService;
+	}
+	public String execute()throws Exception{
+		
+		ActionContext ctx=ActionContext.getContext();
+		Integer counter=(Integer) ctx.getApplication().get("counter");
+		if(counter==null){
+			counter=1;
+		}
+		else{
+			counter=counter+1;
+		}
+		 ctx.getApplication().put("counter",counter);//每登陆一次，统计总共被登陆过多少次
+		
+	
+		Xsb xs=xsService.find(dl.getXh());
+	    String xh=xs.getXh();
+		Dlb user=dlService.find(dl.getXh(), dl.getKl());
+		if(user!=null){
+			Map session=(Map)ActionContext.getContext().getSession();
+			session.put("user", user);
+			session.put("xs", xs);
+			session.put("xh", xh);
+			return SUCCESS;
+		}else
+			return ERROR;
+	}
+	public String register() throws Exception{
+		if(dlService.existXh(xh)){
+			return ERROR;
+		}
+		
+		else if(xsService.find(xh)!=null){
+			Dlb d=new Dlb();
+			d.setId(null);
+			d.setKl(kl);
+			d.setXh(xh);
+			d.setFlag(flag);
+			System.out.println(flag);
+			dlService.save(d);
+		}else return NONE;
+		return SUCCESS;
+	}
+}

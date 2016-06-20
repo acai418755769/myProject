@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.model">
+	<class name="Dlb" table="dlb">
+		<id name="id">
+			<generator class="identity"/>
+		</id>
+		<property name="xh" type="string"/>
+			<property name="kl" type="string"/>
+			<property name="flag" type="int"/>
+			
+		
+	</class>
+</hibernate-mapping>

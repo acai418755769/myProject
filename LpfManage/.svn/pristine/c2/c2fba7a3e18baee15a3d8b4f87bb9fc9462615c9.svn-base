@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.i18n.encoding" value="UTF-8"/>
+	<constant name="struts.devMode" value="true"/>
+	
+	<package name="login"  extends="struts-default">
+		<action name="login" class="org.action.DlAction">
+			<result name="success">index.jsp</result>
+			<result name="error">login.jsp</result>
+		</action>
+		</package>
+		
+		<package name="common"  extends="struts-default">
+              <action name="excelTask" class="org.action.TaskAction">
+              <result>/OutExcelServlet</result>
+              </action>
+           <action name="count" class="org.action.BridgeAction" method="count">
+               <result name="success">/TestServlet</result>
+           </action>
+              
+     </package>
+	<!-- 上报事件 -->
+	<package name="event" extends="struts-default">
+	<action name="showEvent" class="org.action.EventAction" method="showEvent">
+	<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">result</param>
+			</result>
+	</action>
+	<action name="eventInfo" class="org.action.EventAction" method="eventInfo">
+	<result name="success">eventList.jsp</result>
+	</action>
+	<action name="findOneEvent" class="org.action.EventAction" method="findOneEvent">
+	  <result name="success">eventdetail.jsp</result>
+	</action>
+	<action name="getEventImage" class="org.action.EventAction" method="getEventImage">
+	</action>
+	<!-- 派工单 -->
+	<action name="taskInfo" class="org.action.TaskAction" method="taskInfo">
+	<result name="success">taskList.jsp</result>
+	</action>
+	<action name="showTask" class="org.action.TaskAction" method="showTask">
+	<result type="stream">
+	  <param name="contentType">text/html</param>
+				<param name="inputName">result</param>
+	</result>
+	</action>
+	<action name="addTaskView" class="org.action.TaskAction" method="addTaskView">
+	<result name="success">addTask.jsp</result>
+	<result name="error">noFreeWorker.jsp</result>
+	</action>
+	<action name="addTask" class="org.action.TaskAction" method="addTask">
+	<result name="success">/success.jsp</result>
+	<result name="error">/fail.jsp</result>
+	</action>
+	<action name="findOneTask" class="org.action.TaskAction" method="findOneTask">
+	  <result name="success">taskdetail.jsp</result>
+	</action>
+	<action name="getTaskHphoto" class="org.action.TaskAction" method="getTaskHphoto">
+	</action>
+	<action name="getTaskWphoto" class="org.action.TaskAction" method="getTaskWphoto">
+	</action>
+	<!--手机端添加上报事件  -->
+	<action name="addEvent" class="org.action.EventAction">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">result</param>
+			</result>
+		</action>
+		<action name="addWorkerEvent" class="org.action.TaskAction" method="addWorkerEvent">
+			<result type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">result</param>
+			</result>
+		</action>
+	<!--worker -->
+	  <action name="workerInfo" class="org.action.WorkerAction" method="workerInfo">
+	<result name="success">workerList.jsp</result>
+	</action>
+	<action name="showWorker" class="org.action.WorkerAction" method="showWorker">
+	<result type="stream">
+	  <param name="contentType">text/html</param>
+				<param name="inputName">result</param>
+	</result>
+	</action>
+	<action name="addWorkerView" class="org.action.WorkerAction" method="addWorkerView">
+			<result name="success">/addworker.jsp</result>
+		</action>
+   <action name="addWorker" class="org.action.WorkerAction" method="addWorker">
+      <result name="success">/success.jsp</result>
+			<result name="error">/existXs.jsp</result>
+			<result name="input">/addworker.jsp</result>
+   </action>
+   <!-- 桥梁信息 -->
+   <action name="bridgeInfo" class="org.action.BridgeAction" method="bridgeInfo">
+	<result name="success">bridgeList.jsp</result>
+	</action>
+   <action name="showBridge" class="org.action.BridgeAction" method="showBridge">
+     <result type="stream">
+	  <param name="contentType">text/html</param>
+				<param name="inputName">result</param>
+	</result>
+   </action>
+  
+   </package>
+	
+	
+</struts>

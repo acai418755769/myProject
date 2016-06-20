@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+<bean id="datasource"	class="org.apache.commons.dbcp.BasicDataSource">
+	<!-- 定义数据库驱动 -->
+	<property name="driverClassName"		value="com.mysql.jdbc.Driver">
+	</property>
+	<!-- 定义数据库URL -->
+	<property name="url"		value="jdbc:mysql://localhost:3306/xscj">
+	</property>
+	<!-- 定义数据库的用户名 -->
+	<property name="username" value="root"></property>
+	<!-- 定义数据库密码 -->
+	<property name="password" value="root"></property>
+</bean>
+<!-- 定义Hibernate的SessionFactory -->
+<bean id="sessionFactory"	class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	<!--定义SessionFactory必须注入DataSource-->
+	<property name="dataSource">
+		<ref bean="datasource" />
+	</property>
+	<!--定义Hibernate的SessionFactory属性-->
+	<property name="hibernateProperties">
+		<props>
+			<prop key="hibernate.dialect" >
+				org.hibernate.dialect.MySQLDialect
+			</prop>
+			
+			<!-- 后台 显示hibernate查询语句 
+				<prop key="hibernate.show_sql" >
+				true
+			</prop>
+			
+				<prop key="hibernate.format_sql" >
+				true
+			</prop>
+			-->
+		</props>
+	</property>
+	<!-- 定义POJO的映射文件 -->
+	<property name="mappingResources">
+		<list>
+			    <value>org/model/Dlb.hbm.xml</value>
+				<value>org/model/Xsb.hbm.xml</value>
+				<value>org/model/Kcb.hbm.xml</value>
+				<value>org/model/Zyb.hbm.xml</value>
+				<value>org/model/Cjb.hbm.xml</value>
+				<value>org/model/LyTable.hbm.xml</value>
+				
+		</list>
+	</property>
+</bean>
+<bean id="transactionManager"		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<!-- HibernateTransactionManager   bean需要依赖注入一个SessionFactory bean的引用-->
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	<!--   配置事务拦截器-->
+	<bean id="transactionInterceptor"		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<!--   事务拦截器bean需要依赖注入一个事务管理器 -->
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<!-- 下面定义事务传播属性-->
+			<props>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- 定义BeanNameAutoProxyCreator,该bean无需被引用，因此没有id属性,这个bean根据事务拦截器为目标bean自动创建事务代理-->
+	<bean		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<!-- 指定对满足哪些bean name的bean自动生成业务代理  -->
+		<property name="beanNames">
+			<!--   下面是所有需要自动创建事务代理的bean-->
+			<list>
+				<value>xsService</value>
+				<value>kcService</value>
+				<value>cjService</value>
+			<value>zyService</value>
+			</list>
+			<!--   此处可增加其他需要自动创建事务代理的bean-->
+		</property>
+		<!--   下面定义BeanNameAutoProxyCreator所需的事务拦截器-->
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+				<!-- 此处可增加其他新的Interceptor -->
+			</list>
+		</property>
+	</bean>
+
+
+</beans>

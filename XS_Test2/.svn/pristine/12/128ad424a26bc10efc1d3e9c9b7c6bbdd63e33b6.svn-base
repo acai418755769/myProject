@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
+	"http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+
+<!-- 登陆的action和service -->
+     <bean id="dlAction" class="org.action.DlAction">
+		<property name="dlService">
+		<ref bean="dlService" />
+		</property>
+		<property name="xsService">
+		<ref bean="xsService"/>
+		</property>
+	</bean>
+	<bean id="dlService" class="org.service.imp.DlServiceManage">
+		<property name="dlDao">
+			<ref bean="dlDao"/>
+		</property>
+	</bean>
+	
+	
+	<!-- 成绩的action和service -->
+	<bean id="cjAction" class="org.action.CjAction">
+	<property name="cjService" >
+	<ref bean="cjService"/>
+	</property>
+	<property name="xsService">
+	<ref bean="xsService" />
+	</property>
+	<property name="kcService">
+	<ref bean="kcService" />
+	</property>
+	</bean>
+	<bean id="cjService" class="org.service.imp.CjServiceManage">
+	<property name="cjDao">
+	<ref bean="cjDao"/>
+	</property>
+	</bean>
+	
+	
+	
+	<!-- 课程的action和service -->
+	<bean id="kcAction" class="org.action.KcAction">
+	<property name="kcService" >
+	<ref bean="kcService"/>
+	</property>
+	</bean>
+	<bean id="kcService" class="org.service.imp.KcServiceMange">
+	<property name="kcDao" >
+	<ref bean="kcDao"/>
+	</property>
+	</bean>
+	
+	
+	<!-- 学生的action和service -->
+	<bean id="xsAction" class="org.action.XsAction">
+	<property name="xsService" >
+	<ref bean="xsService"/>
+	</property>
+	<property name="zyService">
+	<ref bean="zyService" />
+	</property>
+	</bean>
+	<bean id="xsService" class="org.service.imp.XsServiceManage">
+	<property name="xsDao">
+	<ref bean="xsDao"/>
+	</property>
+	</bean>
+	
+	
+	<!-- 专业的action和service -->
+	
+	<bean  name="zyService" class="org.service.imp.ZyServiceManage">
+	<property name="zyDao">
+	<ref  bean="zyDao"/></property>
+	</bean>
+	
+	<!-- 留言的action和service -->
+	<bean id="lyAction" class="org.action.LyAction">
+	<property name="lyService" >
+	<ref bean="lyService"/>
+	</property>
+	<property name="xsService" >
+	<ref bean="xsService"/>
+	</property>
+	</bean>
+	
+	<bean  name="lyService" class="org.service.imp.LyServiceManage">
+	<property name="lyDao">
+	<ref  bean="lyDao"/>
+	</property>
+	</bean>
+	
+	
+	
+</beans>
