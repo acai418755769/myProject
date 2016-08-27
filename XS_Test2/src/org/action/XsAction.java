@@ -286,10 +286,10 @@ public class XsAction extends ActionSupport{
 			Gson json=new Gson();
 			XsDeleteJson xsDeleteJson=json.fromJson(data,XsDeleteJson.class);
 			xsService.delete(xsDeleteJson.getXh());
-			inputStream=new ByteArrayInputStream("É¾³ı³É¹¦".getBytes("UTF-8"));
+			inputStream=new ByteArrayInputStream("åˆ é™¤æˆåŠŸ".getBytes("UTF-8"));
 			}
 			else {
-				inputStream=new ByteArrayInputStream("È¨ÏŞ²»×ã£¬ÎŞ·¨²Ù×÷".getBytes("UTF-8"));
+				inputStream=new ByteArrayInputStream("æƒé™ä¸è¶³ï¼Œæ— æ³•æ“ä½œ".getBytes("UTF-8"));
 			}
 			return SUCCESS;
 		}
